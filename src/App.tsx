@@ -3,15 +3,21 @@ import "./App.css";
 import Alert from "./components/Alert";
 import Board from "./components/Board";
 import Keyboard from "./components/Keyboard";
+import Toast from "./components/Toast";
+import {
+  findDuplicates,
+  generateRandomWord,
+  isInDictionary,
+} from "./hooks/useWordList";
 
 const WORD_SIZE: number = 5;
 const GUESS_LIMIT = 5;
-const RANDOM_WORD = "lunge";
 const initialState = new Array<string>(WORD_SIZE).fill(
   "".padStart(WORD_SIZE, " ")
 );
+
 function App() {
-  const [word, setWord] = useState<string>(RANDOM_WORD);
+  const [word, setWord] = useState<string>("");
   const [gameOver, setGameOver] = useState<string>("");
   const [board, setBoard] = useState<string[]>(initialState);
   const [currentGuess, setCurrentGuess] = useState("");
@@ -19,6 +25,15 @@ function App() {
   const [correctLetters, setCorrectLetters] = useState<string[]>([]);
   const [incorrectLetters, setIncorrectLetters] = useState<string[]>([]);
   const [misplacedLetters, setMisplacedLetters] = useState<string[]>([]);
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>("");
+
+  console.log(word);
+
+  useEffect(() => {
+    // setWord(generateRandomWord());
+    setWord("error");
+  }, []);
 
   const addLetter = useCallback(
     (letter: string) => {
@@ -30,13 +45,17 @@ function App() {
       newBoard[currentRow] = builtWord.padEnd(WORD_SIZE, " ");
       setBoard(newBoard);
     },
-    [currentGuess]
+    [currentGuess, gameOver]
   );
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const key = e.key;
       e.preventDefault();
+      if (key === "Enter" && gameOver) {
+        resetGame();
+        return;
+      }
       if (key === "Enter") guessWord();
       if (key === "Backspace") backspace();
       if (!key.match(/^[a-z]$/)) return;
@@ -61,7 +80,15 @@ function App() {
 
   const guessWord = () => {
     // if not correct lenth, do nothing or add a warning
-    if (currentGuess.length < WORD_SIZE) return;
+    if (currentGuess.length < WORD_SIZE) {
+      handleToast("Too short");
+      return;
+    }
+
+    if (!isInDictionary(currentGuess)) {
+      handleToast("Not a word");
+      return;
+    }
 
     // build used letter categories
     const guessArr = currentGuess.split("");
@@ -97,10 +124,32 @@ function App() {
     setCurrentGuess("");
   };
 
+  const handleToast = (message: string) => {
+    setShowToast(true);
+    setToastMessage(message);
+    setTimeout(() => {
+      setShowToast(false);
+      setToastMessage("");
+    }, 1000);
+  };
+
+  const resetGame = useCallback(() => {
+    setWord(generateRandomWord());
+    setBoard(initialState);
+    setCurrentRow(0);
+    setCorrectLetters([]);
+    setIncorrectLetters([]);
+    setMisplacedLetters([]);
+    setGameOver("");
+  }, []);
+
   return (
     <div className="App">
       <div className="container relative">
-        {gameOver && <Alert type={gameOver} />}
+        {showToast && <Toast message={toastMessage} />}
+        {gameOver && (
+          <Alert type={gameOver} resetGame={resetGame} word={word} />
+        )}
         <Board board={board} word={word} currentRow={currentRow} />
         <Keyboard
           addLetter={addLetter}

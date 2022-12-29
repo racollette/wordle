@@ -1,3 +1,4 @@
+import { findDuplicates } from "./useWordList";
 
 interface IStyles {
     CORRECT: string;
@@ -14,17 +15,22 @@ const STYLES: IStyles = {
 }
 
 // note: how to handle edge case in which there are duplicate letters and one is already guessed correctly?
-export const useTileStyle = (char: string, index: number, word: string, currentRow: number, rowIndex: number) => {
+export const useTileStyle = (char: string, index: number, word: string, currentRow: number, rowIndex: number, guess: string) => {
     if (rowIndex === currentRow) return STYLES.EMPTY
     if (char === " ") return STYLES.EMPTY
+    const wordArr = [...word]
+    const guessArr = [...guess]
 
-    const wordArr = word.split("")
-    // if guessed character does not exist in word
+    if (char === word[index]) return STYLES.CORRECT
     if (!wordArr.includes(char)) return STYLES.INCORRECT
-    // if the guessed character exists in the word but is in the wrong position
-    if (char !== wordArr[index]) return STYLES.MISPLACED
-    // otherwise it must be the correct letter in the correct position
-    return STYLES.CORRECT
+    // if there are no duplicates in target word
+    if (!findDuplicates(wordArr).includes(char)) { 
+        if (guessArr[wordArr.indexOf(char)] === char) return STYLES.INCORRECT
+        if (findDuplicates(guessArr).includes(char) && (wordArr.indexOf(char) < index)) return STYLES.INCORRECT
+        return STYLES.MISPLACED
+    } else {
+        return STYLES.MISPLACED
+    }
 }
 
 export const useKeyStyle = (char: string, correctLetters: string[], misplacedLetters: string[], incorrectLetters: string[]) => {

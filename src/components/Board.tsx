@@ -29,7 +29,8 @@ const Board = ({ board, word, currentRow }: BoardProps) => {
                       colIndex,
                       word,
                       currentRow,
-                      rowIndex
+                      rowIndex,
+                      board[rowIndex]
                     )}`}
                   >
                     <div className="text-5xl font-extrabold uppercase">
