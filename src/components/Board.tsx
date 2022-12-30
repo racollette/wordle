@@ -9,13 +9,10 @@ interface BoardProps {
 const Board = ({ board, word, currentRow }: BoardProps) => {
   return (
     <div className="lg:max-w-2xl md:max-w-xl">
-      <div className={`grid grid-rows-${board.length} gap-4 md:gap-4`}>
+      <div className={`grid grid-rows-5 gap-4 md:gap-4`}>
         {board.map((row, rowIndex) => {
           return (
-            <div
-              key={rowIndex}
-              className={`grid grid-cols-${board.length} gap-2 md:gap-2`}
-            >
+            <div key={rowIndex} className={`grid grid-cols-5 gap-2 md:gap-2`}>
               {row.split("").map((col, colIndex) => {
                 return (
                   <div
