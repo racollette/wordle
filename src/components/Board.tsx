@@ -8,23 +8,19 @@ interface BoardProps {
 
 const Board = ({ board, word, currentRow }: BoardProps) => {
   return (
-    <div className="mb-12">
-      <div className={`grid grid-rows-${board.length} gap-6`}>
+    <div className="lg:max-w-2xl md:max-w-xl">
+      <div className={`grid grid-rows-${board.length} gap-4 md:gap-4`}>
         {board.map((row, rowIndex) => {
           return (
             <div
               key={rowIndex}
-              className={`grid grid-cols-${board.length} gap-4`}
+              className={`grid grid-cols-${board.length} gap-2 md:gap-2`}
             >
               {row.split("").map((col, colIndex) => {
                 return (
                   <div
                     key={colIndex}
-                    // style={{
-                    //   transition: "transform 1s",
-                    //   transform: "rotateY(360deg)",
-                    // }}
-                    className={`transition-colors ease-in duration-300 aspect-square border-4 rounded-lg flex items-center justify-center ${useTileStyle(
+                    className={`transition-colors ease-in duration-300 p-4 md:w-28 aspect-square rounded-lg flex items-center justify-center ${useTileStyle(
                       col,
                       colIndex,
                       word,
@@ -33,7 +29,7 @@ const Board = ({ board, word, currentRow }: BoardProps) => {
                       board[rowIndex]
                     )}`}
                   >
-                    <div className="text-5xl font-extrabold uppercase">
+                    <div className="text-2xl md:text-4xl font-extrabold uppercase">
                       {col}
                     </div>
                   </div>

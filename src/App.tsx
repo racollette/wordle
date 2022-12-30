@@ -28,11 +28,8 @@ function App() {
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>("");
 
-  console.log(word);
-
   useEffect(() => {
-    // setWord(generateRandomWord());
-    setWord("error");
+    setWord(generateRandomWord());
   }, []);
 
   const addLetter = useCallback(
@@ -70,15 +67,15 @@ function App() {
     };
   }, [addLetter]);
 
-  const backspace = () => {
+  const backspace = useCallback(() => {
     const rebuiltWord = currentGuess.slice(0, -1);
     setCurrentGuess(rebuiltWord);
     const newBoard = [...board];
     newBoard[currentRow] = rebuiltWord.padEnd(WORD_SIZE, " ");
     setBoard(newBoard);
-  };
+  }, [currentGuess, board]);
 
-  const guessWord = () => {
+  const guessWord = useCallback(() => {
     // if not correct lenth, do nothing or add a warning
     if (currentGuess.length < WORD_SIZE) {
       handleToast("Too short");
@@ -122,7 +119,14 @@ function App() {
 
     setCurrentRow(currentRow + 1);
     setCurrentGuess("");
-  };
+  }, [
+    currentGuess,
+    board,
+    word,
+    correctLetters,
+    misplacedLetters,
+    incorrectLetters,
+  ]);
 
   const handleToast = (message: string) => {
     setShowToast(true);
@@ -145,31 +149,22 @@ function App() {
 
   return (
     <div className="App">
-      <div className="container relative">
+      <div className="mb-8">
         {showToast && <Toast message={toastMessage} />}
         {gameOver && (
           <Alert type={gameOver} resetGame={resetGame} word={word} />
         )}
         <Board board={board} word={word} currentRow={currentRow} />
-        <Keyboard
-          addLetter={addLetter}
-          correctLetters={correctLetters}
-          misplacedLetters={misplacedLetters}
-          incorrectLetters={incorrectLetters}
-        />
-        <button
-          className="text-4xl border-red-600 text-red-600 border-2 p-4 rounded-lg mt-10 mr-5"
-          onClick={() => backspace()}
-        >
-          Backspace
-        </button>
-        <button
-          className="text-4xl border-green-700 text-green-700 border-2 p-4 rounded-lg mt-10 ml-5"
-          onClick={() => guessWord()}
-        >
-          Enter
-        </button>
       </div>
+
+      <Keyboard
+        addLetter={addLetter}
+        backspace={backspace}
+        guessWord={guessWord}
+        correctLetters={correctLetters}
+        misplacedLetters={misplacedLetters}
+        incorrectLetters={incorrectLetters}
+      />
     </div>
   );
 }

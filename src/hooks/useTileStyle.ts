@@ -28,14 +28,13 @@ export const useTileStyle = (char: string, index: number, word: string, currentR
         if (guessArr[wordArr.indexOf(char)] === char) return STYLES.INCORRECT
         if (findDuplicates(guessArr).includes(char) && (wordArr.indexOf(char) < index)) return STYLES.INCORRECT
         return STYLES.MISPLACED
-    } else {
-        return STYLES.MISPLACED
-    }
+    } 
+    return STYLES.MISPLACED
 }
 
 export const useKeyStyle = (char: string, correctLetters: string[], misplacedLetters: string[], incorrectLetters: string[]) => {
     if (correctLetters.includes(char)) return STYLES.CORRECT
     if (misplacedLetters.includes(char)) return STYLES.MISPLACED
-    if (incorrectLetters.includes(char)) return STYLES.INCORRECT
-    return STYLES.EMPTY
+    if (incorrectLetters.includes(char)) return STYLES.EMPTY
+    return STYLES.INCORRECT
 }

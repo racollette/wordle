@@ -13,8 +13,8 @@ export const isInDictionary = (word: string) => {
     return wordIsValid
 }
 
+// function that checks if any letters are repeated
 export const findDuplicates = (arr: string[]) => {
-    // function that checks if any letters are repeated
     return arr.filter((currentValue, currentIndex) =>
     arr.indexOf(currentValue) !== currentIndex);
 }
