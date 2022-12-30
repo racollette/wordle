@@ -17,7 +17,7 @@ const Board = ({ board, word, currentRow }: BoardProps) => {
                 return (
                   <div
                     key={colIndex}
-                    className={`transition-colors ease-in duration-300 p-4 md:w-28 aspect-square rounded-lg flex items-center justify-center ${useTileStyle(
+                    className={`transition-colors ease-in duration-300 p-4 w-16 md:w-28 md:aspect-square rounded-lg flex items-center justify-center ${useTileStyle(
                       col,
                       colIndex,
                       word,
